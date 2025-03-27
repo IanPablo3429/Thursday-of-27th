@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>TEXTLY Application</title>
+  
+
+
+<!-- Emoji Picker Library -->
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
+<style>
+  #emojiButton {
+    font-size: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+</style>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TEXTLYY</title>
+  <!-- Modern & minimal styles, with Telegram/WhatsApp-like alignment & time stamps -->
+  <style>
+    /* Global Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      /* Sleek gradient background in soft blue & purple tones */
+      background: linear-gradient(115deg, #5563DE 0%, #8752D9 100%);
+      font-family: 'Roboto', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* ---------- Authentication Styles ---------- */
+    .auth-container {
+      width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    .tabs button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .tabs button.active {
+      background: #007AFF;
+      color: #fff;
+    }
+    .auth-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .auth-container form input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      font-size: 16px;
+      outline: none;
+    }
+    .auth-container form button {
+      padding: 12px;
+      border: none;
+      background: #007AFF;
+      color: #fff;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .auth-container form button:hover {
+      background: #005bb5;
+    }
+    .social-login {
+      margin-top: 20px;
+      color: #fff;
+    }
+    .social-btn {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #fff;
+    }
+    .social-btn[data-provider="Google"] { background: #DB4437; }
+    .social-btn[data-provider="Facebook"] { background: #3B5998; }
+    .social-btn[data-provider="Twitter"] { background: #1DA1F2; }
+    .social-btn[data-provider="Phone"] { background: #34A853; }
+
+    /* ---------- Chat & Status Styles ---------- */
+    .chat-container {
+      width: 800px;
+      height: 600px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      border-radius: 20px;
+      display: flex;
+      overflow: hidden;
+      color: #fff;
+    }
+    .chat-sidebar {
+      width: 250px;
+      background: rgba(255, 255, 255, 0.1);
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      backdrop-filter: blur(15px);
+    }
+    .sidebar-header h3 {
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 500;
+      color: #fff;
+    }
+    .sidebar-header input {
+      padding: 5px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    .sidebar-header button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #fff;
+      transition: background 0.3s;
+    }
+    .sidebar-header button:hover {
+      opacity: 0.8;
+    }
+    #newChatBtn { background: #007AFF; }
+    #newGroupBtn { background: #007AFF; }
+    #statusSidebarBtn { background: #34A853; }
+    .conversation-list {
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+    .conversation-item {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .conversation-item:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .chat-header {
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      backdrop-filter: blur(15px);
+    }
+    /* Admin Controls */
+    #adminControls {
+      display: none;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      backdrop-filter: blur(15px);
+    }
+    #adminControls button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      border: none;
+      background: #007AFF;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    #adminControls button:hover {
+      background: #005bb5;
+    }
+    /* Main area: Chat messages, Status container, and Chat input */
+    .chat-messages, .status-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-input {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(15px);
+    }
+    .chat-input input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      margin: 0 10px;
+      outline: none;
+      color: #333;
+    }
+    .chat-input button {
+      border: none;
+      background: #007AFF;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    .chat-input button:hover {
+      background: #005bb5;
+    }
+    .image-upload-btn,
+    .video-upload-btn,
+    .document-upload-btn,
+    .story-upload-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #007AFF;
+      margin-right: 5px;
+      transition: color 0.3s;
+    }
+    .image-upload-btn:hover,
+    .video-upload-btn:hover,
+    .document-upload-btn:hover,
+    .story-upload-btn:hover {
+      color: #005bb5;
+    }
+    .message, .status-item {
+      margin: 5px;
+      padding: 8px 12px;
+      border-radius: 15px;
+      max-width: 70%;
+      display: inline-block;
+      word-wrap: break-word;
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: left;
+      position: relative; /* for time stamp positioning */
+    }
+    /* Sender (sent) bubble: anchor right, light green, black text */
+    .message.sent {
+      align-self: flex-end;
+      background: #dcf8c6;
+      color: #000;
+      margin-right: 10px;
+    }
+    /* Receiver (received) bubble: anchor left, light grey, black text */
+    .message.received {
+      align-self: flex-start;
+      background: #f0f0f0;
+      color: #000;
+      margin-left: 10px;
+    }
+    /* Time stamp styling */
+    .timestamp {
+      display: block;
+      font-size: 10px;
+      color: #666;
+      margin-top: 2px;
+    }
+    /* Align the time stamp to the right for sent messages, left for received */
+    .message.sent .timestamp {
+      text-align: right;
+    }
+    .message.received .timestamp {
+      text-align: left;
+    }
+    .message img, .message video,
+    .status-item img, .status-item video {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 10px;
+      display: block;
+    }
+    .message a {
+      color: #007AFF;
+      text-decoration: none;
+    }
+    .status-item {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .status-owner {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+  </style>
+
+<!-- Emoji Picker Library -->
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
+<style>
+  #emojiButton {
+    font-size: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+</style>
+
+</head>
+<body>
+  <!-- Authentication Section -->
+  
+<button id="themeToggle" style="position: absolute; top: 15px; right: 15px; padding: 5px 10px; border-radius: 10px; background: #fff; color: #333; font-size: 12px; cursor: pointer;">🌙 Dark Mode</button>
+
+
+<div id="profileModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+background:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:1000;">
+  <h3 style="margin-bottom:10px;">Profile Settings</h3>
+  <input type="file" id="modalAvatarUpload" accept="image/*" /><br><br>
+  <button onclick="document.getElementById('profileModal').style.display='none'">Close</button>
+</div>
+<button id="openProfileBtn" style="position:absolute;top:15px;left:15px;padding:5px 10px;border-radius:10px;background:#fff;color:#333;font-size:12px;cursor:pointer;">👤 Profile</button>
+
+<div id="authContainer" class="auth-container">
+    <div class="tabs">
+      <button id="loginTab" class="active">Login</button>
+      <button id="signupTab">Sign Up</button>
+    </div>
+    <!-- Login Form -->
+    <div id="loginFormContainer">
+      <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button type="submit">Login</button>
+      
+<input type="file" id="avatarUpload" accept="image/*" style="display: none;" />
+<label for="avatarUpload" style="cursor:pointer;font-size: 12px; margin-top: 10px; color: #fff; text-decoration: underline;">Upload Avatar</label>
+
+</form>
+      <div class="social-login">
+        <p>Or login with</p>
+        <button class="social-btn" data-provider="Google">Google</button>
+        <button class="social-btn" data-provider="Facebook">Facebook</button>
+        <button class="social-btn" data-provider="Twitter">Twitter</button>
+        <button class="social-btn" data-provider="Phone">Phone</button>
+      </div>
+    </div>
+    <!-- Sign Up Form -->
+    <div id="signupFormContainer" style="display: none;">
+      <form id="signupForm">
+        <input type="text" id="signupUsername" placeholder="Email" required />
+        <input type="password" id="signupPassword" placeholder="Password" required />
+        <input type="text" id="signupPhone" placeholder="Phone Number (optional)" />
+        <button type="submit">Sign Up</button>
+      
+<input type="file" id="avatarUpload" accept="image/*" style="display: none;" />
+<label for="avatarUpload" style="cursor:pointer;font-size: 12px; margin-top: 10px; color: #fff; text-decoration: underline;">Upload Avatar</label>
+
+</form>
+      <div class="social-login">
+        <p>Or sign up with</p>
+        <button class="social-btn" data-provider="Google">Google</button>
+        <button class="social-btn" data-provider="Facebook">Facebook</button>
+        <button class="social-btn" data-provider="Twitter">Twitter</button>
+        <button class="social-btn" data-provider="Phone">Phone</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Chat Section -->
+  <div id="chatSection" class="chat-container" style="display: none;">
+    <!-- Sidebar -->
+    <div class="chat-sidebar">
+      <div class="sidebar-header">
+        <h3>Textlyy</h3>
+        <input type="text" id="userSearch" placeholder="Search users..." />
+        <button id="newChatBtn">New Chat</button>
+        <button id="newGroupBtn">New Group Chat</button>
+        <!-- New Status button in sidebar -->
+        <button id="statusSidebarBtn">Status/Stories</button>
+      </div>
+      <div class="conversation-list" id="conversationList"></div>
+    </div>
+    <!-- Main Chat & Status Area -->
+    <div class="chat-main">
+      <div class="chat-header">
+        <span class="app-title" id="conversationTitle">Select a conversation</span><span id="presenceStatus" style="margin-left: 10px; font-size: 13px; color: #8f8;">●</span>
+        <button id="logout-btn">Logout</button>
+      </div>
+      <!-- Admin controls for group chats -->
+      <div id="adminControls">
+        <button id="addMemberBtn">Add Member</button>
+        <button id="removeMemberBtn">Remove Member</button>
+      </div>
+      <!-- Chat messages view (default) -->
+      <div id="chatMessages" class="chat-messages"></div><div id="recordingStatus" style="padding: 5px 15px; color: #ffb74d; font-style: italic; font-size: 13px; display: none;">Recording...</div><div id="typingIndicator" style="padding: 5px 15px; color: #ccc; font-style: italic; font-size: 13px; display: none;">Typing...</div>
+      <!-- Status view (hidden by default) -->
+      <div id="statusContainer" class="status-container" style="display: none;">
+        <button id="addStatusBtn" class="story-upload-btn" title="Add Story">Add Story</button>
+        <div id="statusList"></div>
+      </div>
+      <!-- Chat input area (hidden when in status view) -->
+      <div id="chatInputArea" class="chat-input">
+        <button id="emojiButton" class="image-upload-btn" title="Insert Emoji">😊</button>
+<button id="imageUploadBtn" class="image-upload-btn" title="Send Image">📷</button>
+        <button id="videoUploadBtn" class="video-upload-btn" title="Send Video">📹</button>
+        <button id="documentUploadBtn" class="document-upload-btn" title="Send Document">📄</button>
+<button id="audioUploadBtn" class="image-upload-btn" title="Send Audio">🎵</button>
+<button id="micRecordBtn" class="image-upload-btn" title="Record Voice Note">🎤</button>
+
+        <input type="text" id="messageInput" placeholder="Type a message..." />
+        <button id="sendButton">Send</button>
+        <!-- Hidden file inputs -->
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" />
+        <input type="file" id="videoInput" accept="video/*" style="display: none;" />
+        <input type="file" id="documentInput" accept=".pdf,.doc,.docx" style="display: none;" />
+        <input type="file" id="audioInput" accept="audio/*" style="display: none;" />
+<!-- Hidden file input for status stories -->
+        <input type="file" id="statusInput" accept="image/*,video/*" style="display: none;" />
+      </div>
+    </div>
+  </div>
+  
+  <!-- Firebase and Application Logic -->
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { getFirestore, collection, doc, getDoc, setDoc, addDoc, query, where, onSnapshot, orderBy, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+    
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAfsrEvRLqyqaPD9ypBx314u71i2J1SsHE",
+      authDomain: "textly-c9cbb.firebaseapp.com",
+      projectId: "textly-c9cbb",
+      storageBucket: "textly-c9cbb.firebasestorage.app",
+      messagingSenderId: "130520832234",
+      appId: "1:130520832234:web:10fd9319e46111cb39df93",
+      measurementId: "G-172YKCM75W"
+    };
+    
+    if (!getApps().length) {
+      initializeApp(firebaseConfig);
+    }
+    const analytics = getAnalytics();
+    const auth = getAuth();
+    const db = getFirestore();
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      let currentUser = null;
+      let currentConversationId = null;
+      let messagesUnsub = null;
+      
+      // DOM Elements
+      const authContainer = document.getElementById("authContainer");
+      const loginFormContainer = document.getElementById("loginFormContainer");
+      const signupFormContainer = document.getElementById("signupFormContainer");
+      const loginTab = document.getElementById("loginTab");
+      const signupTab = document.getElementById("signupTab");
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+      const chatSection = document.getElementById("chatSection");
+      const logoutBtn = document.getElementById("logout-btn");
+      const conversationListEl = document.getElementById("conversationList");
+      const conversationTitleEl = document.getElementById("conversationTitle");
+      const chatMessages = document.getElementById("chatMessages");
+      const sendButton = document.getElementById("sendButton");
+      const messageInput = document.getElementById("messageInput");
+      const imageUploadBtn = document.getElementById("imageUploadBtn");
+      const imageInput = document.getElementById("imageInput");
+      const videoUploadBtn = document.getElementById("videoUploadBtn");
+      const videoInput = document.getElementById("videoInput");
+      const documentUploadBtn = document.getElementById("documentUploadBtn");
+      const documentInput = document.getElementById("documentInput");
+      const newChatBtn = document.getElementById("newChatBtn");
+      const newGroupBtn = document.getElementById("newGroupBtn");
+      const userSearch = document.getElementById("userSearch");
+      const adminControls = document.getElementById("adminControls");
+      const addMemberBtn = document.getElementById("addMemberBtn");
+      const removeMemberBtn = document.getElementById("removeMemberBtn");
+      const statusSidebarBtn = document.getElementById("statusSidebarBtn");
+      const statusContainer = document.getElementById("statusContainer");
+      const statusList = document.getElementById("statusList");
+      const addStatusBtn = document.getElementById("addStatusBtn");
+      const statusInput = document.getElementById("statusInput");
+      const chatInputArea = document.getElementById("chatInputArea");
+      
+      // ----------------- UI Functions -----------------
+      function showAuth() {
+        chatSection.style.display = "none";
+        authContainer.style.display = "block";
+      }
+      function showChat() {
+        authContainer.style.display = "none";
+        chatSection.style.display = "flex";
+        chatMessages.style.display = "block";
+        chatInputArea.style.display = "flex";
+        statusContainer.style.display = "none";
+        loadConversations();
+      }
+      
+      statusSidebarBtn.addEventListener("click", () => {
+        chatMessages.style.display = "none";
+        chatInputArea.style.display = "none";
+        statusContainer.style.display = "block";
+        loadStatuses();
+      });
+      
+      // ----------------- Real-time Conversation List -----------------
+      let convosUnsub = null;
+      function loadConversations() {
+        if (!currentUser) return;
+        const convosQuery = query(
+          collection(db, "conversations"),
+          where("participants", "array-contains", currentUser.email)
+        );
+        if (convosUnsub) convosUnsub();
+        convosUnsub = onSnapshot(convosQuery, (snapshot) => {
+          conversationListEl.innerHTML = "";
+          snapshot.forEach(docSnap => {
+            const convo = { id: docSnap.id, ...docSnap.data() };
+            const div = document.createElement("div");
+            div.classList.add("conversation-item");
+            
+    const otherEmail = convo.participants.find(p => p !== currentUser.email);
+    
+    const userRef = doc(db, "users", otherEmail);
+    getDoc(userRef).then(snap => {
+      const userData = snap.data();
+      const avatar = userData?.avatar || "https://via.placeholder.com/40";
+      const emoji = userData?.emoji || "👤";
+      div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><img src="${avatar}" style="width:32px;height:32px;border-radius:50%;" /><div><strong>${emoji} ${convo.isGroup ? convo.title : otherEmail.split("@")[0]}</strong><br><small style="color:#ccc">${otherEmail}</small></div></div>`;
+    });
+    
+    
+            div.addEventListener("click", () => {
+              currentConversationId = convo.id;
+              conversationTitleEl.innerHTML = div.innerHTML;
+              chatMessages.style.display = "block";
+              chatInputArea.style.display = "flex";
+              statusContainer.style.display = "none";
+              loadMessages(convo.id);
+            });
+            conversationListEl.appendChild(div);
+          });
+        });
+      }
+      
+      // ----------------- Real-time Messages -----------------
+      async function loadMessages(convoId) {
+  subscribeToNotifications(convoId);
+  listenForTyping(convoId);
+  markMessagesAsRead(convoId);
+  listenForRecording(convoId);
+        adminControls.style.display = "none";
+        if (messagesUnsub) messagesUnsub();
+        chatMessages.innerHTML = "";
+        const messagesQuery = query(
+          collection(db, "conversations", convoId, "messages"),
+          orderBy("timestamp", "asc")
+        );
+        messagesUnsub = onSnapshot(messagesQuery, (snapshot) => {
+          chatMessages.innerHTML = "";
+          snapshot.forEach(docSnap => {
+            const msg = docSnap.data();
+            addMessage(msg.content, msg.sender === currentUser.email ? "sent" : "received", msg.type, msg.timestamp, msg.readBy);
+          });
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+        
+        const convoRef = doc(db, "conversations", convoId);
+        const convoSnap = await getDoc(convoRef);
+        if (convoSnap.exists()) {
+  showOtherUserPresence(convoSnap.data());
+          const convoData = convoSnap.data();
+          if (convoData.isGroup && convoData.admin === currentUser.email) {
+            adminControls.style.display = "block";
+          }
+        }
+      }
+      
+      // Adds message + timestamp
+      function addMessage(content, type, messageType, msgTimestamp, readBy = []) {
+        const messageEl = document.createElement("div");
+        messageEl.classList.add("message", type);
+        
+        // The main message content
+        if (messageType === "text") {
+          const textEl = document.createElement("div");
+          textEl.textContent = content;
+          messageEl.appendChild(textEl);
+} else if (messageType === "image") {
+  const imgEl = document.createElement("img");
+  imgEl.src = content;
+  imgEl.style.cursor = "pointer";
+  imgEl.addEventListener("click", () => {
+    const win = window.open();
+    win.document.write('<img src="' + content + '" style="max-width:100%">');
+  });
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = content;
+  downloadLink.download = "image";
+  downloadLink.textContent = "Download";
+  downloadLink.style.display = "block";
+  downloadLink.style.fontSize = "12px";
+  downloadLink.style.marginTop = "5px";
+  downloadLink.style.color = "#007AFF";
+
+  messageEl.appendChild(imgEl);
+  messageEl.appendChild(downloadLink);
+} else if (messageType === "video") {
+  const videoEl = document.createElement("video");
+  videoEl.src = content;
+  videoEl.controls = true;
+  videoEl.style.maxWidth = "100%";
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = content;
+  downloadLink.download = "video";
+  downloadLink.textContent = "Download";
+  downloadLink.style.display = "block";
+  downloadLink.style.fontSize = "12px";
+  downloadLink.style.marginTop = "5px";
+  downloadLink.style.color = "#007AFF";
+
+  messageEl.appendChild(videoEl);
+  messageEl.appendChild(downloadLink);
+        } else if (messageType === "document") {
+          const linkEl = document.createElement("a");
+          linkEl.href = content;
+          linkEl.textContent = "Download Document";
+          linkEl.target = "_blank";
+          messageEl.appendChild(linkEl);
+        }
+        
+        // Add a timestamp below the content
+        const timestampEl = document.createElement("div");
+        timestampEl.classList.add("timestamp");
+        if (msgTimestamp) {
+          timestampEl.textContent = new Date(msgTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } else {
+          timestampEl.textContent = "Unknown time";
+        }
+        
+  if (type === "sent" && Array.isArray(readBy)) {
+    const seenEl = document.createElement("div");
+    seenEl.style.fontSize = "10px";
+    seenEl.style.color = "#4caf50";
+    seenEl.textContent = readBy.length > 1 ? "✓✓ Seen" : "✓ Sent";
+    timestampEl.appendChild(seenEl);
+  }
+
+  messageEl.appendChild(timestampEl);
+        
+        chatMessages.appendChild(messageEl);
+      }
+      
+      // ----------------- Loading Statuses -----------------
+      async function loadStatuses() {
+        const convosQuery = query(
+          collection(db, "conversations"),
+          where("participants", "array-contains", currentUser.email)
+        );
+        const convosSnap = await getDocs(convosQuery);
+        const contactsSet = new Set();
+        convosSnap.forEach(docSnap => {
+          const data = docSnap.data();
+          data.participants.forEach(email => {
+            if (email !== currentUser.email) contactsSet.add(email);
+          });
+        });
+        contactsSet.add(currentUser.email);
+        const contacts = Array.from(contactsSet);
+        
+        const cutoff = Date.now() - (24 * 60 * 60 * 1000);
+        const batchSize = 10;
+        let allStatuses = [];
+        for (let i = 0; i < contacts.length; i += batchSize) {
+          const batch = contacts.slice(i, i + batchSize);
+          const statusesQuery = query(
+            collection(db, "statuses"),
+            where("owner", "in", batch),
+            where("timestamp", ">", cutoff)
+          );
+          const statusesSnap = await getDocs(statusesQuery);
+          statusesSnap.forEach(docSnap => {
+            allStatuses.push(docSnap.data());
+          });
+        }
+        statusList.innerHTML = "";
+        allStatuses.forEach(status => {
+          const item = document.createElement("div");
+          item.classList.add("status-item");
+          const ownerEl = document.createElement("div");
+          ownerEl.classList.add("status-owner");
+          ownerEl.textContent = status.owner;
+          item.appendChild(ownerEl);
+          if (status.type === "image") {
+            const imgEl = document.createElement("img");
+            imgEl.src = status.content;
+            item.appendChild(imgEl);
+          } else if (status.type === "video") {
+            const videoEl = document.createElement("video");
+            videoEl.src = status.content;
+            videoEl.controls = true;
+            item.appendChild(videoEl);
+          }
+          statusList.appendChild(item);
+        });
+      }
+      
+      // ----------------- Adding a Status / Story -----------------
+      async function addStatus(content, type) {
+        const status = {
+          owner: currentUser.email,
+          type,
+          content,
+          timestamp: Date.now()
+        };
+        await addDoc(collection(db, "statuses"), status);
+        console.log("Status uploaded:", status);
+        alert("Story uploaded!");
+        loadStatuses();
+      }
+      
+      // ----------------- Authentication -----------------
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          currentUser = user;
+          showChat();
+        } else {
+          currentUser = null;
+          showAuth();
+        }
+      });
+      
+      // ----------------- Tab Switching -----------------
+      loginTab.addEventListener("click", () => {
+        loginTab.classList.add("active");
+        signupTab.classList.remove("active");
+        loginFormContainer.style.display = "block";
+        signupFormContainer.style.display = "none";
+      });
+      signupTab.addEventListener("click", () => {
+        signupTab.classList.add("active");
+        loginTab.classList.remove("active");
+        signupFormContainer.style.display = "block";
+        loginFormContainer.style.display = "none";
+      });
+      
+      // ----------------- Email/Password Login -----------------
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+        if (email && password) {
+          signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+              currentUser = auth.currentUser;
+              showChat();
+            })
+            .catch((error) => {
+              alert("Login failed: " + error.message);
+            });
+        }
+      });
+      
+      // ----------------- Email/Password Sign Up -----------------
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("signupUsername").value.trim();
+        const password = document.getElementById("signupPassword").value.trim();
+        if (email && password) {
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            await setDoc(doc(db, "users", user.uid), { email: user.email, emoji: getRandomEmoji() });
+            currentUser = user;
+            showChat();
+          } catch (error) {
+            alert("Sign Up failed: " + error.message);
+          }
+        }
+      });
+      
+      // ----------------- Social Login -----------------
+      document.querySelectorAll(".social-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const providerName = btn.getAttribute("data-provider");
+          let provider;
+          if (providerName === "Google") {
+            provider = new GoogleAuthProvider();
+          } else if (providerName === "Facebook") {
+            provider = new FacebookAuthProvider();
+          } else if (providerName === "Twitter") {
+            provider = new TwitterAuthProvider();
+          } else if (providerName === "Phone") {
+            alert("Phone authentication is not implemented.");
+            return;
+          }
+          try {
+            const result = await signInWithPopup(auth, provider);
+            currentUser = result.user;
+            // Merge user data
+            await setDoc(doc(db, "users", currentUser.uid), { email: currentUser.email }, { merge: true });
+            showChat();
+          } catch (error) {
+            alert("Social login failed: " + error.message);
+          }
+        });
+      });
+      
+      // ----------------- Logout -----------------
+      logoutBtn.addEventListener("click", async () => {
+        try {
+          await auth.signOut();
+          currentUser = null;
+          currentConversationId = null;
+          if (convosUnsub) convosUnsub();
+          if (messagesUnsub) messagesUnsub();
+          showAuth();
+        } catch (error) {
+          alert("Logout failed: " + error.message);
+        }
+      });
+      
+      // ----------------- New Chat -----------------
+      newChatBtn.addEventListener("click", async () => {
+        if (!currentUser) return;
+        let targetUser = prompt("Enter the email of the user to chat with:").trim().toLowerCase();
+        if (!targetUser) return;
+        if (targetUser === currentUser.email.toLowerCase()) {
+          alert("You cannot chat with yourself.");
+          return;
+        }
+        const usersRef = collection(db, "users");
+        const qUsers = query(usersRef, where("email", "==", targetUser));
+        const userSnap = await getDocs(qUsers);
+        if (userSnap.empty) {
+          alert("User not found.");
+          return;
+        }
+        const convosRef = collection(db, "conversations");
+        const convosQuery = query(convosRef, where("isGroup", "==", false));
+        let found = false;
+        let convoId = null;
+        const convosSnap = await getDocs(convosQuery);
+        convosSnap.forEach(docSnap => {
+          const c = docSnap.data();
+          if (c.participants.length === 2 &&
+              c.participants.includes(currentUser.email) &&
+              c.participants.includes(targetUser)) {
+            found = true;
+            convoId = docSnap.id;
+          }
+        });
+        if (!found) {
+          const newConvo = {
+            isGroup: false,
+            participants: [currentUser.email.toLowerCase(), targetUser],
+            createdAt: Date.now()
+          };
+          const docRef = await addDoc(convosRef, newConvo);
+          convoId = docRef.id;
+        }
+        currentConversationId = convoId;
+        chatMessages.style.display = "block";
+        chatInputArea.style.display = "flex";
+        statusContainer.style.display = "none";
+        loadMessages(convoId);
+      });
+      
+      // ----------------- New Group Chat -----------------
+      newGroupBtn.addEventListener("click", async () => {
+        if (!currentUser) return;
+        const groupName = prompt("Enter group chat name:");
+        if (!groupName) return;
+        const usersInput = prompt("Enter emails to add (comma separated):");
+        if (!usersInput) return;
+        const participants = usersInput.split(",")
+          .map(u => u.trim().toLowerCase())
+          .filter(u => u && u !== currentUser.email.toLowerCase());
+        let validParticipants = [];
+        for (let email of participants) {
+          const qUsers = query(collection(db, "users"), where("email", "==", email));
+          const snap = await getDocs(qUsers);
+          if (!snap.empty) {
+            validParticipants.push(email);
+          }
+        }
+        if (validParticipants.length === 0) {
+          alert("No valid participants found.");
+          return;
+        }
+        validParticipants.push(currentUser.email.toLowerCase());
+        const convosRef = collection(db, "conversations");
+        const newGroup = {
+          isGroup: true,
+          title: groupName,
+          participants: validParticipants,
+          admin: currentUser.email.toLowerCase(),
+          createdAt: Date.now()
+        };
+        const docRef = await addDoc(convosRef, newGroup);
+        currentConversationId = docRef.id;
+        chatMessages.style.display = "block";
+        chatInputArea.style.display = "flex";
+        statusContainer.style.display = "none";
+        loadMessages(docRef.id);
+      });
+      
+      // ----------------- Sending Text Messages -----------------
+      sendButton.addEventListener("click", async () => {
+        if (!currentConversationId || !currentUser) return;
+        const text = messageInput.value.trim();
+        if (!text) return;
+        const message = {
+          sender: currentUser.email,
+          type: "text",
+          content: text,
+          timestamp: Date.now()
+        };
+        await addDoc(collection(db, "conversations", currentConversationId, "messages"), message);
+        messageInput.value = "";
+      });
+      messageInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") sendButton.click();
+      });
+      
+      // ----------------- Sending Image Messages -----------------
+      imageUploadBtn.addEventListener("click", () => {
+        if (!currentConversationId || !currentUser) return;
+        imageInput.click();
+      });
+      imageInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0] && currentConversationId) {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = async function(ev) {
+            const message = {
+              sender: currentUser.email,
+              type: "image",
+              content: ev.target.result,
+              timestamp: Date.now()
+            };
+            await addDoc(collection(db, "conversations", currentConversationId, "messages"), message);
+          };
+          reader.readAsDataURL(file);
+          imageInput.value = "";
+        }
+      });
+      
+      // ----------------- Sending Video Messages -----------------
+      videoUploadBtn.addEventListener("click", () => {
+        if (!currentConversationId || !currentUser) return;
+        videoInput.click();
+      });
+      videoInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0] && currentConversationId) {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = async function(ev) {
+            const message = {
+              sender: currentUser.email,
+              type: "video",
+              content: ev.target.result,
+              timestamp: Date.now()
+            };
+            await addDoc(collection(db, "conversations", currentConversationId, "messages"), message);
+          };
+          reader.readAsDataURL(file);
+          videoInput.value = "";
+        }
+      });
+      
+      // ----------------- Sending Document Messages -----------------
+      documentUploadBtn.addEventListener("click", () => {
+        if (!currentConversationId || !currentUser) return;
+        documentInput.click();
+      });
+      documentInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0] && currentConversationId) {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = async function(ev) {
+            const message = {
+              sender: currentUser.email,
+              type: "document",
+              content: ev.target.result,
+              timestamp: Date.now()
+            };
+            await addDoc(collection(db, "conversations", currentConversationId, "messages"), message);
+          };
+          reader.readAsDataURL(file);
+          documentInput.value = "";
+        }
+      });
+      
+      // ----------------- Admin Controls: Add / Remove Members -----------------
+      addMemberBtn.addEventListener("click", async () => {
+        if (!currentConversationId) return;
+        let newMember = prompt("Enter the email of the new member:").trim().toLowerCase();
+        if (!newMember) return;
+        const usersRef = collection(db, "users");
+        const qUsers = query(usersRef, where("email", "==", newMember));
+        const snap = await getDocs(qUsers);
+        if (snap.empty) {
+          alert("User not found.");
+          return;
+        }
+        const convoRef = doc(db, "conversations", currentConversationId);
+        const convoSnap = await getDoc(convoRef);
+        if (convoSnap.exists()) {
+  showOtherUserPresence(convoSnap.data());
+          const convoData = convoSnap.data();
+          if (!convoData.participants.includes(newMember)) {
+            const newParticipants = [...convoData.participants, newMember];
+            await updateDoc(convoRef, { participants: newParticipants });
+            alert("Member added.");
+          } else {
+            alert("User is already a member.");
+          }
+        }
+      });
+      
+      removeMemberBtn.addEventListener("click", async () => {
+        if (!currentConversationId) return;
+        let memberToRemove = prompt("Enter the email of the member to remove:").trim().toLowerCase();
+        if (!memberToRemove) return;
+        const convoRef = doc(db, "conversations", currentConversationId);
+        const convoSnap = await getDoc(convoRef);
+        if (convoSnap.exists()) {
+  showOtherUserPresence(convoSnap.data());
+          const convoData = convoSnap.data();
+          if (!convoData.participants.includes(memberToRemove)) {
+            alert("User is not in this conversation.");
+            return;
+          }
+          if (memberToRemove === convoData.admin) {
+            alert("Admin cannot remove themselves.");
+            return;
+          }
+          const newParticipants = convoData.participants.filter(email => email !== memberToRemove);
+          await updateDoc(convoRef, { participants: newParticipants });
+          alert("Member removed.");
+        }
+      });
+      
+      // ----------------- Searching Users -----------------
+      userSearch.addEventListener("input", async () => {
+        const queryValue = userSearch.value.trim().toLowerCase();
+        if (!queryValue) {
+          loadConversations();
+          return;
+        }
+        const usersRef = collection(db, "users");
+        const allSnap = await getDocs(usersRef);
+        conversationListEl.innerHTML = "";
+        allSnap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.email.toLowerCase().includes(queryValue) &&
+              data.email.toLowerCase() !== currentUser.email.toLowerCase()) {
+            const div = document.createElement("div");
+            div.classList.add("conversation-item");
+            div.textContent = data.email;
+            div.addEventListener("click", async () => {
+              const convosRef = collection(db, "conversations");
+              const convosQuery = query(convosRef, where("isGroup", "==", false));
+              let found = false;
+              let convoId = null;
+              const convosSnap = await getDocs(convosQuery);
+              convosSnap.forEach(docSnap => {
+                const c = docSnap.data();
+                if (c.participants.length === 2 &&
+                    c.participants.includes(currentUser.email.toLowerCase()) &&
+                    c.participants.includes(data.email.toLowerCase())) {
+                  found = true;
+                  convoId = docSnap.id;
+                }
+              });
+              if (!found) {
+                const newConvo = {
+                  isGroup: false,
+                  participants: [currentUser.email.toLowerCase(), data.email.toLowerCase()],
+                  createdAt: Date.now()
+                };
+                const docRef = await addDoc(convosRef, newConvo);
+                convoId = docRef.id;
+              }
+              currentConversationId = convoId;
+              chatMessages.style.display = "block";
+              chatInputArea.style.display = "flex";
+              statusContainer.style.display = "none";
+              loadMessages(convoId);
+            });
+            conversationListEl.appendChild(div);
+          }
+        });
+      });
+      
+    });
+  </script>
+
+<script>
+  const emojiBtn = document.getElementById('emojiButton');
+  const messageInput = document.getElementById('messageInput');
+
+  const picker = new EmojiButton({
+    position: 'top-start',
+    theme: 'auto'
+  });
+
+  picker.on('emoji', emoji => {
+    messageInput.value += emoji;
+    messageInput.focus();
+  });
+
+  emojiBtn.addEventListener('click', () => {
+    picker.togglePicker(emojiBtn);
+  });
+</script>
+
+<script>
+// Audio Upload
+const audioUploadBtn = document.getElementById("audioUploadBtn");
+const audioInput = document.getElementById("audioInput");
+
+audioUploadBtn.addEventListener("click", () => {
+  if (!currentConversationId || !currentUser) return;
+  audioInput.click();
+});
+
+audioInput.addEventListener("change", (e) => {
+  if (e.target.files && e.target.files[0] && currentConversationId) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = async function(ev) {
+      const message = {
+        sender: currentUser.email,
+        type: "audio",
+        content: ev.target.result,
+        timestamp: Date.now()
+      };
+      await addDoc(collection(db, "conversations", currentConversationId, "messages"), message);
+    };
+    reader.readAsDataURL(file);
+    audioInput.value = "";
+  }
+});
+
+// Voice Note Recording
+const micRecordBtn = document.getElementById("micRecordBtn");
+let mediaRecorder;
+let audioChunks = [];
+
+micRecordBtn.addEventListener("click", async () => {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("Voice recording not supported in this browser.");
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = event => {
+      audioChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      const blob = new Blob(audioChunks, { type: 'audio/webm' });
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Audio = reader.result;
+        const message = {
+          sender: currentUser.email,
+          type: "audio",
+          content: base64Audio,
+          timestamp: Date.now()
+        };
+        await addDoc(collection(db, "conversations", currentConversationId, "messages"), message);
+      };
+      reader.readAsDataURL(blob);
+    };
+
+    mediaRecorder.start();
+    micRecordBtn.textContent = "⏹️";
+    setTimeout(() => {
+      mediaRecorder.stop();
+      micRecordBtn.textContent = "🎤";
+    }, 60000); // Automatically stop after 60s
+  } catch (err) {
+    alert("Recording failed: " + err.message);
+  }
+});
+</script>
+
+<div id="recordingOverlay" style="display: none; position: fixed; bottom: 80px; right: 30px; background: rgba(0,0,0,0.8); color: white; padding: 10px 15px; border-radius: 10px; font-family: sans-serif;">
+  <div id="recordingTimer">Recording: 0s</div>
+  <div style="margin-top: 8px;">
+    <button id="sendRecordingBtn" style="margin-right: 10px;">✅ Send</button>
+    <button id="cancelRecordingBtn">❌ Delete</button>
+  </div>
+</div>
+
+</body>
+</html>
+<!-- partial -->
+  
+
+<script>
+  const emojiBtn = document.getElementById('emojiButton');
+  const messageInput = document.getElementById('messageInput');
+
+  const picker = new EmojiButton({
+    position: 'top-start',
+    theme: 'auto'
+  });
+
+  picker.on('emoji', emoji => {
+    messageInput.value += emoji;
+    messageInput.focus();
+  });
+
+  emojiBtn.addEventListener('click', () => {
+    picker.togglePicker(emojiBtn);
+  });
+</script>
+
+<script>
+let dark = localStorage.getItem("theme") !== "light";
+
+function applyTheme() {
+  document.body.style.background = dark ? "linear-gradient(115deg, #5563DE 0%, #8752D9 100%)" : "#f4f4f4";
+  document.querySelectorAll(".auth-container, .chat-container, .chat-sidebar, .chat-main, .chat-header, .chat-input").forEach(el => {
+    el.style.background = dark ? "rgba(255,255,255,0.1)" : "#ffffff";
+    el.style.color = dark ? "#fff" : "#000";
+  });
+  themeToggle.textContent = dark ? "☀️ Light Mode" : "🌙 Dark Mode";
+  localStorage.setItem("theme", dark ? "dark" : "light");
+}
+themeToggle.addEventListener("click", () => {
+  dark = !dark;
+  applyTheme();
+});
+applyTheme();
+
+document.getElementById("openProfileBtn").addEventListener("click", () => {
+  document.getElementById("profileModal").style.display = "block";
+});
+document.getElementById("modalAvatarUpload").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = async function(event) {
+    if (currentUser) {
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        avatar: event.target.result
+      });
+      alert("Avatar updated!");
+      document.getElementById("profileModal").style.display = "none";
+    }
+  };
+  if (file) reader.readAsDataURL(file);
+});
+</script>
+</body>
